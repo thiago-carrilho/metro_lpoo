@@ -1,5 +1,6 @@
 package controller;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,15 +17,29 @@ public class UsersControler extends Menu {
 	private ReclamacoesDAO ReclamacaoDAO;
 	private UsersDAO userDAO;
 	private Scanner in;
+	private MenuWrapper wrapper;
 	private AbstractUsers user;
 	public UsersControler(ReclamacoesDAO ReclamacaoDAO, Scanner in, AbstractUsers user, UsersDAO userDAO) {
 		super();
-		this.ReclamacaoDAO=ReclamacaoDAO;
-		this.userDAO = userDAO;
-		this.in = in;
-		this.user=user;
-		super.addOpcao("teste", () -> criarReclamacaoEstacao(in));
+		try {
+			this.ReclamacaoDAO=ReclamacaoDAO;
+			this.wrapper = new MenuWrapper();
+			this.userDAO = userDAO;
+			this.in = in;
+			this.user=user;
+			super.addMenu();
+//			super.addOpcao("Realizar Login", () -> userDAO.loginUser(login, senha));
+			super.addOpcao("Realizar Login",
+					userDAO.getClass().getDeclaredMethod("teste"), userDAO,wrapper);
+
+//			super.addMenu("Realizar Cadastro", () -> );
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
+
 	public void criarReclamacaoEstacao(Scanner in) {
 		int idUsuario = userDAO.getUserId(user);
 		Reclamacao reclamacao = null;
@@ -51,6 +66,9 @@ public class UsersControler extends Menu {
 //		for (Reclamacao listaReclamacoes : listaReclamacoesUser) {
 //			
 //		}
+	}
+	public void teste() {
+		System.out.println(wrapper.ola);
 	}
 	public void acompanharReclamacao(int reclamacaoId) {
 		

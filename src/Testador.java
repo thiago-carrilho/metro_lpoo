@@ -59,8 +59,8 @@ public class Testador {
 		user = usuarios.loginUser("tico@gmail.com", "carrilho");
 		System.out.println(user);
 		UsersControler controller = new UsersControler(reclamacoes, in, user, usuarios);
-		controller.listarOpcoes();
-		controller.executarOpcao(1);
+		controller.listarOpcoes(in);
+		controller.teste();
 //		UserPassageiro a = new UserPassageiro("Thiago Carrilho","tico@gmail.com", "carrilho");
 //		usuarios.add(a);
 		

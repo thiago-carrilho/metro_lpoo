@@ -13,10 +13,15 @@ public class MySQL {
 			
 		}
 		
-		public static Connection getConnection() throws Exception {  
-			if(conn==null) {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/metroprojeto", "root", "root");
+		public static Connection getConnection(){ 
+			try {
+				if(conn==null) {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+					conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/metroprojeto", "root", "root");
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
 			}
 			return conn;
 		}

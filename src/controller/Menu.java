@@ -1,30 +1,81 @@
 package controller;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.Callable;
 
 import DAO.UsersDAO;
 
 public class Menu {
-	protected LinkedHashMap<String, Runnable> menuList = new LinkedHashMap<>();
+	protected LinkedList<LinkedHashMap<String, ChamarMetodoInterface>>
+		menuList = new LinkedList<>();
+	
 	private int opcaoMenu=-1;
 	
 	public Menu() {
 		//menuList.put("Logar", () -> UsersDAO.loginUser());
 	}
-	public void addOpcao(String opcao, Runnable metodo) {
-		menuList.put(opcao, metodo);
+	public void addOpcao(String opcao, Method metodo, Object obj, MenuWrapper wrapper) {
+		//Adiciona uma opcao no ultimo menu criado.
+		
+		//menuList.get(menuList.size()-1).put(opcao, 
+		//		this.getClass().getDeclaredMethod("printHelloWorld"));
+		ChamarMetodoInterface inv = new ChamarMetodo();
+
+	    inv.setMethod(metodo);
+	    inv.setObj(obj);
+	    inv.setWrapper(wrapper);
+	    if(menuList.getLast()!=null) {
+	    	this.menuList.getLast().put(opcao,inv);
+	    }
+	    else {
+	    	LinkedHashMap<String, ChamarMetodoInterface> novo =
+	    			new LinkedHashMap<String, ChamarMetodoInterface>();
+	    	novo.put(opcao,inv);
+	    	this.menuList.set(this.menuList.lastIndexOf(null), novo);
+	    	//this.menuList.add(e)
+	    	System.out.println("NULO" + this.menuList.getLast().toString());
+	    }
 	}
-	public void listarOpcoes() {
-		for (String opcao : menuList.keySet()) {
-			System.out.println(opcao);
+	public void addMenu() {//Cria um menu
+//		LinkedHashMap<String, InvokesMethodItf> newHash = 
+//				new LinkedHashMap<String, InvokesMethodItf>();
+		menuList.add(null);
+	}
+	public void listarOpcoes(Scanner in) {
+		int escolha=-1;
+		for (int i = 0; i < menuList.size(); i++) {
+			for (String textoOpcao : menuList.get(i).keySet()) {
+				System.out.println((i+1) + " - " + textoOpcao);
+				escolha = escolherOpcao(in, i);
+			}
+			
 		}
 	}
-	public void executarOpcao(int id) {
-		List<Runnable> opcoes = new ArrayList<>(menuList.values());
-		opcoes.get(id-1).run();
+	public int escolherOpcao(Scanner in, int idArrayList) {
+//		while(opcaoMenu!=0) {
+			opcaoMenu= in.nextInt();
+			while(opcaoMenu<0 || opcaoMenu>menuList.get(idArrayList).size()) {
+				System.out.println("Digite uma opcao valida");
+			}
+			executarOpcao(idArrayList, opcaoMenu);
+			
+			System.out.println("Ta aqui");
+			return opcaoMenu;
+//		}
+	}
+	public void executarOpcao(int idArrayList, int idHashMap) {
+		List<ChamarMetodoInterface> opcoes = new ArrayList<>(menuList.get(idArrayList).values());
+		try {
+			opcoes.get(idHashMap-1).invokeMethod();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public void menuInicial(Scanner in) {
 		System.out.println("\n" + 
@@ -51,15 +102,5 @@ public class Menu {
 		String parar = in.nextLine();
 	}
 	
-	public void escolherOpcao(Scanner in) {
-		while(opcaoMenu!=0) {
-			opcaoMenu= in.nextInt();
-			if(opcaoMenu<0 || opcaoMenu>menuList.size()) {
-				System.out.println("Digite uma opcao valida");
-				continue;
-			}
-			//switch
-			System.out.println("Ta aqui");
-		}
-	}
+	
 }

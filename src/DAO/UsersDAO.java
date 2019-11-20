@@ -57,6 +57,9 @@ public class UsersDAO implements InterfaceDAO<AbstractUsers> {
 		// TODO Auto-generated method stub
 
 	}
+	public String teste() {
+		return "OLAAAA";
+	}
 
 	public AbstractUsers loginUser(String login, String senha) throws Exception {
 		AbstractUsers user = null;
